@@ -3,7 +3,7 @@
 # Inspired by cawilliamson https://github.com/cawilliamson/ansible-gpdpocket
 
 pkgname=gpd-fan
-pkgver=0.1.0
+pkgver=v1.0.0
 pkgrel=1
 arch=('x86_64')
 url="https://github.com/njkli/gpd-pocket/tree/master/gpd-fan"
@@ -24,22 +24,19 @@ sha256sums=('7bf09108055c56eb2a8652fdfb43baa500d3bd381fc34232ba0eb2759726f995'
             '3905269d7762fae0ad942619d3a4db50fd6885f77a5d6719d64d087c05502b13'
             '84493819929edd6851d383720a81755ffc1ec1dc407bbaf063e21bd88f95d7f8')
 
-prepare() {
-  find ./ -type l -delete
-  for i in ${source[@]}; do cp ../$i ./; done
-}
-
 pkgver() {
   printf "v%s" "$(grep define_version $srcdir/gpd-fan.cr | awk '{print $2}' | sed 's/\"//g')"
 }
 
 build() {
+  cd $srcdir
   crystal deps
   msg 'Building binary...'
   crystal build --release --no-debug gpd-fan.cr
 }
 
 package() {
+  cd $srcdir
   mkdir -p $pkgdir/usr/bin
   mkdir -p $pkgdir/usr/lib/systemd/system
   mkdir -p $pkgdir/etc/default
